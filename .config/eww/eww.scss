@@ -1,0 +1,95 @@
+* { all: unset; font-family: "JetBrainsMono Nerd Font"; }
+
+.dash {
+  background-color: rgba(24, 24, 37, 0.94);
+  border: 2px solid #cba6f7;
+  border-radius: 20px;
+  padding: 20px;
+  margin: 8px;
+}
+
+/* header */
+.header { margin-bottom: 6px; }
+.clock { font-size: 48px; font-weight: bold; color: #f9e2af; }
+.date  { font-size: 15px; color: #a6adc8; }
+.user  { font-size: 13px; color: #cba6f7; margin-top: 2px; }
+
+/* cards */
+.card {
+  background-color: rgba(49, 50, 68, 0.55);
+  border-radius: 14px;
+  padding: 14px;
+}
+
+/* metrics */
+.metric-label { font-size: 13px; color: #a6adc8; }
+.metric-val   { font-size: 13px; color: #cdd6f4; font-weight: bold; }
+
+.metric-bar trough {
+  background-color: #313244;
+  border-radius: 12px;
+  min-height: 12px;
+}
+.metric-bar progress {
+  border-radius: 12px;
+  min-height: 12px;
+}
+.m-cpu  progress { background-color: #fab387; }
+.m-ram  progress { background-color: #94e2d5; }
+.m-temp progress { background-color: #f38ba8; }
+.m-batt progress { background-color: #a6e3a1; }
+
+/* sliders */
+.slider trough {
+  background-color: #313244;
+  border-radius: 12px;
+  min-height: 8px;
+}
+.slider highlight { border-radius: 12px; }
+.m-vol    highlight { background-color: #f5c2e7; }
+.m-bright highlight { background-color: #f9e2af; }
+.slider slider {
+  background-color: #cdd6f4;
+  border-radius: 50%;
+  min-width: 15px;
+  min-height: 15px;
+  margin: -4px;
+}
+
+/* power buttons */
+.powercard { padding: 12px; }
+.pbtn {
+  background-color: #313244;
+  color: #cdd6f4;
+  border-radius: 10px;
+  padding: 9px 6px;
+  font-size: 12px;
+}
+.pbtn:hover { background-color: #cba6f7; color: #11111b; }
+.pbtn.off:hover    { background-color: #f38ba8; color: #11111b; }
+.pbtn.reboot:hover { background-color: #fab387; color: #11111b; }
+.pbtn.lock:hover   { background-color: #89dceb; color: #11111b; }
+
+/* cheatsheet */
+.cheat {
+  background-color: rgba(24, 24, 37, 0.96);
+  border: 2px solid #cba6f7;
+  border-radius: 18px;
+  padding: 24px;
+  margin: 8px;
+}
+.cheat-title {
+  font-size: 22px;
+  font-weight: bold;
+  color: #cba6f7;
+  margin-bottom: 12px;
+}
+.keyrow { padding: 5px 2px; }
+.key { color: #f9e2af; font-weight: bold; font-size: 14px; }
+.act { color: #cdd6f4; font-size: 14px; }
+
+/* now playing */
+.nowplaying { }
+.np-label { font-size: 11px; color: #a6adc8; }
+.np-track { background-color: transparent; color: #f5c2e7; font-size: 14px; }
+.np-track:hover { color: #cba6f7; }

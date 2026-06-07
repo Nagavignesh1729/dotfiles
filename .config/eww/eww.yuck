@@ -1,0 +1,98 @@
+;; eww dashboard — "Mocha Neon" (text-based, no glyphs)
+
+(defpoll TIME   :interval "5s"  `date +"%H:%M"`)
+(defpoll DATE   :interval "60s" `date +"%A, %d %B"`)
+(defpoll TEMP   :interval "3s"  `cat /sys/class/thermal/thermal_zone0/temp 2>/dev/null | awk '{printf "%.0f", $1/1000}'`)
+(defpoll BAT    :interval "10s" `cat /sys/class/power_supply/BAT*/capacity 2>/dev/null | head -1`)
+(defpoll VOL    :interval "1s"  `wpctl get-volume @DEFAULT_AUDIO_SINK@ 2>/dev/null | awk '{printf "%.0f", $2*100}'`)
+(defpoll BRIGHT :interval "2s"  `brightnessctl -m 2>/dev/null | awk -F, '{print $4}' | tr -d '%'`)
+(defpoll NOWPLAYING :interval "2s" `playerctl metadata --format '{{artist}} - {{title}}' 2>/dev/null || echo ""`)
+
+(defwidget metric [label value cls unit]
+  (box :orientation "v" :space-evenly false :class "metric"
+    (box :space-evenly false :class "metric-head"
+      (label :class "metric-label" :text label :halign "start" :hexpand true)
+      (label :class "metric-val" :text "${value}${unit}" :halign "end"))
+    (progress :class "metric-bar ${cls}" :value {value ?: 0} :orientation "h")))
+
+(defwidget header []
+  (box :orientation "v" :space-evenly false :class "header"
+    (label :class "clock" :text TIME)
+    (label :class "date"  :text DATE)
+    (label :class "user"  :text "naga@ezio")))
+
+(defwidget syscard []
+  (box :orientation "v" :space-evenly false :class "card" :spacing 12
+    (metric :label "CPU"  :value {round(EWW_CPU.avg, 0)}           :cls "m-cpu"  :unit "%")
+    (metric :label "RAM"  :value {round(EWW_RAM.used_mem_perc, 0)} :cls "m-ram"  :unit "%")
+    (metric :label "TEMP" :value TEMP                              :cls "m-temp" :unit "°C")
+    (metric :label "BATT" :value BAT                               :cls "m-batt" :unit "%")))
+
+(defwidget slidercard [label value cmd cls]
+  (box :orientation "v" :space-evenly false :class "card" :spacing 8
+    (box :space-evenly false
+      (label :class "metric-label" :text label :halign "start" :hexpand true)
+      (label :class "metric-val" :text "${value}%" :halign "end"))
+    (scale :class "slider ${cls}" :value {value ?: 0} :onchange cmd :min 0 :max 100)))
+
+(defwidget powerrow []
+  (box :class "card powercard" :space-evenly true :spacing 8
+    (button :class "pbtn lock"   :onclick "eww close dashboard && hyprlock &" "Lock")
+    (button :class "pbtn logout" :onclick "hyprctl dispatch exit"            "Logout")
+    (button :class "pbtn reboot" :onclick "systemctl reboot"                 "Reboot")
+    (button :class "pbtn off"    :onclick "systemctl poweroff"               "Off")))
+
+(defwidget nowplaying []
+  (box :class "card nowplaying" :orientation "v" :space-evenly false :spacing 3
+       :visible {NOWPLAYING != ""}
+    (label :class "np-label" :text "NOW PLAYING" :halign "start")
+    (button :class "np-track" :onclick "playerctl play-pause" :tooltip "Click: play/pause"
+      (label :text NOWPLAYING :halign "start" :limit-width 32 :wrap false))))
+
+(defwidget dashboard []
+  (box :orientation "v" :space-evenly false :class "dash" :spacing 14 :valign "start"
+    (header)
+    (nowplaying)
+    (syscard)
+    (slidercard :label "Volume"     :value VOL    :cls "m-vol"    :cmd "wpctl set-volume @DEFAULT_AUDIO_SINK@ {}%")
+    (slidercard :label "Brightness" :value BRIGHT :cls "m-bright" :cmd "brightnessctl set {}%")
+    (powerrow)))
+
+(defwindow dashboard
+  :monitor 0
+  :geometry (geometry :x "14px" :y "46px" :width "340px" :height "600px" :anchor "top right")
+  :stacking "overlay"
+  :exclusive false
+  (dashboard))
+
+;; ---- Keybind cheatsheet (Super+/) ----
+(defwidget keyrow [key action]
+  (box :class "keyrow" :space-evenly false
+    (label :class "key" :text key :halign "start")
+    (label :class "act" :text action :halign "end" :hexpand true)))
+
+(defwidget cheatsheet []
+  (box :orientation "v" :class "cheat" :space-evenly false :spacing 2
+    (label :class "cheat-title" :text "Keybindings")
+    (keyrow :key "Super + Enter" :action "Terminal")
+    (keyrow :key "Super + D"     :action "App launcher")
+    (keyrow :key "Super + B"     :action "Browser")
+    (keyrow :key "Super + E"     :action "Files")
+    (keyrow :key "Super + Q"     :action "Close window")
+    (keyrow :key "Super + V"     :action "Toggle float")
+    (keyrow :key "Super + F"     :action "Fullscreen")
+    (keyrow :key "Super + S"     :action "Scratchpad terminal")
+    (keyrow :key "Super + P"     :action "Color picker")
+    (keyrow :key "Super + H"     :action "Clipboard history")
+    (keyrow :key "Super + N"     :action "Notification center")
+    (keyrow :key "Super + Grave" :action "System dashboard")
+    (keyrow :key "Super + /"     :action "This cheatsheet")
+    (keyrow :key "Super + Esc"   :action "Power menu")
+    (keyrow :key "Super + 1-5"   :action "Switch workspace")
+    (keyrow :key "Print"         :action "Screenshot region")))
+
+(defwindow cheatsheet
+  :monitor 0
+  :geometry (geometry :width "460px" :height "580px" :anchor "center")
+  :stacking "overlay"
+  (cheatsheet))

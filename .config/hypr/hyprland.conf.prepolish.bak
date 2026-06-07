@@ -1,0 +1,197 @@
+monitor=,highrr,auto,1
+
+env = XCURSOR_THEME,Bibata-Modern-Ice
+env = XCURSOR_SIZE,24
+
+env = HYPERCURSOR_THEME,Bibata-Modern-Ice
+env = HYPERCURSOR_SIZE,24
+
+exec-once = waybar
+exec-once = nm-applet --indicator
+
+input {
+	kb_layout = us
+	follow_mouse = 1
+	touchpad {
+		natural_scroll = yes
+	}
+}
+
+# =========================
+# KEYBINDINGS
+# =========================
+
+# App Launcher
+bind = SUPER, D, exec, wofi --show drun
+
+# Terminal
+bind = SUPER, Return, exec, kitty
+
+# Browser
+bind = SUPER, B, exec, firefox
+
+# File Manager
+bind = SUPER, E, exec, thunar
+
+# Close Active Window
+bind = SUPER, Q, killactive
+
+# Exit Hyprland Session
+bind = SUPER SHIFT, E, exit
+
+# Toggle Floating Mode
+bind = SUPER, V, togglefloating
+
+# Fullscreen Toggle
+bind = SUPER, F, fullscreen
+
+bind = SUPER, Escape, exec, wlogout
+
+#Notification Center Toggle
+bind = SUPER, N, exec, swaync-client -t -sw
+
+# Clipboard history
+exec-once = wl-paste --type text --watch cliphist store
+exec-once = wl-paste --type image --watch cliphist store
+
+bind = SUPER, H, exec, cliphist list | wofi --dmenu | cliphist decode | wl-copy
+
+# =========================
+# WORKSPACES
+# =========================
+
+# Switch Workspace
+bind = SUPER, 1, workspace, 1
+bind = SUPER, 2, workspace, 2
+bind = SUPER, 3, workspace, 3
+bind = SUPER, 4, workspace, 4
+bind = SUPER, 5, workspace, 5
+
+# Move Window To Workspace
+bind = SUPER SHIFT, 1, movetoworkspace, 1
+bind = SUPER SHIFT, 2, movetoworkspace, 2
+bind = SUPER SHIFT, 3, movetoworkspace, 3
+bind = SUPER SHIFT, 4, movetoworkspace, 4
+bind = SUPER SHIFT, 5, movetoworkspace, 5
+
+# =========================
+# WINDOW MANAGEMENT
+# =========================
+
+# Focus Windows
+bind = SUPER, left, movefocus, l
+bind = SUPER, right, movefocus, r
+bind = SUPER, up, movefocus, u
+bind = SUPER, down, movefocus, d
+
+# Resize Active Window
+bind = SUPER CTRL, left, resizeactive, -50 0
+bind = SUPER CTRL, right, resizeactive, 50 0
+bind = SUPER CTRL, up, resizeactive, 0 -50
+bind = SUPER CTRL, down, resizeactive, 0 50
+
+# Move Active Window
+bind = SUPER SHIFT, left, movewindow, l
+bind = SUPER SHIFT, right, movewindow, r
+bind = SUPER SHIFT, up, movewindow, u
+bind = SUPER SHIFT, down, movewindow, d
+
+# =========================
+# SCREENSHOTS
+# =========================
+
+# Area screenshot
+bind = , Print, exec, grim -g "$(slurp)" - | wl-copy
+
+# Fullscreen screenshot
+bind = SUPER, Print, exec, grim - | wl-copy
+
+# -------------------- LOOKS --------------------
+
+general	{
+	gaps_in = 5
+	gaps_out = 12
+	border_size = 2
+
+	col.active_border = rgba(cba6f7ee) rgba(89dcebee) 45deg
+	col.inactive_border = rgba(313244aa)	
+
+	resize_on_border = true
+	layout = dwindle
+}
+
+decoration {
+	rounding = 12
+
+	active_opacity = 1.0
+	inactive_opacity = 0.92
+	fullscreen_opacity = 1.0
+	
+	blur {
+		enabled = true
+		size = 4
+		passes = 1
+		new_optimizations = true
+		xray = true
+	}
+	shadow {
+    		enabled = true
+    		range = 8
+    		render_power = 2
+	}
+}
+
+animations {
+    enabled = true
+
+    bezier = smooth, 0.25, 0.1, 0.25, 1.0
+
+    bezier = snap, 0.05, 0.9, 0.1, 1.05
+
+    animation = windows, 1, 7, snap
+    animation = windowsOut, 1, 7, smooth
+    animation = border, 1, 10, smooth
+    animation = fade, 1, 7, smooth
+    animation = workspaces, 1, 8, snap, slide
+    animation = specialWorkspace, 1, 7, smooth, slide
+}
+
+misc {
+	vrr = 1
+	force_default_wallpaper = 0
+} 
+
+
+exec-once = awww-daemon &
+exec-once = sleep 2 && awww img ~/Pictures/wallpapers/basic_arch.jpg
+
+exec-once = swaync
+exec-once = /usr/lib/polkit-kde-authentication-agent-1
+
+# eww dashboard
+exec-once = eww daemon
+bind = SUPER, grave, exec, eww open --toggle dashboard
+
+# === Aesthetic/UX additions ===
+# Scratchpad dropdown terminal (Super+S)
+exec-once = [workspace special:magic silent] kitty --class=scratchpad
+bind = SUPER, S, togglespecialworkspace, magic
+
+# Color picker -> hex to clipboard (Super+P)
+bind = SUPER, P, exec, hyprpicker -a
+
+# Night light: auto-warm after sunset (India coords; adjust to taste)
+exec-once = wlsunset -l 12.97 -L 77.59 -t 4000 -T 6500
+
+# Keybind cheatsheet (Super+/)
+bind = SUPER, slash, exec, eww open --toggle cheatsheet
+
+# Tasteful window rules
+
+# Open on login: a terminal + the dashboard (dashboard still toggles via Super+Grave)
+exec-once = kitty
+exec-once = sleep 2 && eww open dashboard
+
+# Qt theming (Kvantum -> Catppuccin Mocha Mauve)
+env = QT_QPA_PLATFORMTHEME,qt6ct
+env = QT_STYLE_OVERRIDE,kvantum

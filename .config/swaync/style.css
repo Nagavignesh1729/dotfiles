@@ -1,0 +1,65 @@
+/* swaync — Catppuccin Mocha ("Mocha Neon") */
+* {
+    font-family: "JetBrainsMono Nerd Font";
+    font-size: 14px;
+}
+
+/* floating popups */
+.floating-notifications.background .notification-row .notification-background {
+    background: rgba(30, 30, 46, 0.96);
+    border: 2px solid #cba6f7;
+    border-radius: 14px;
+    margin: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+/* the slide-out control center */
+.control-center {
+    background: rgba(24, 24, 37, 0.97);
+    border: 2px solid #cba6f7;
+    border-radius: 18px;
+    color: #cdd6f4;
+    margin: 10px;
+    padding: 10px;
+}
+.control-center .widget-title { color: #cdd6f4; font-weight: bold; margin: 6px; }
+.control-center .widget-title > button {
+    background: #313244; color: #cdd6f4;
+    border-radius: 10px; padding: 4px 12px;
+}
+.control-center .widget-title > button:hover { background: #cba6f7; color: #11111b; }
+
+/* notifications (both popup + center) */
+.notification-row { outline: none; }
+.notification {
+    border-radius: 12px;
+    margin: 6px 4px;
+}
+.notification-background .notification-content {
+    background: #313244;
+    color: #cdd6f4;
+    border-radius: 12px;
+    padding: 10px;
+}
+.notification .summary { color: #cba6f7; font-weight: bold; }
+.notification .body    { color: #cdd6f4; }
+.notification .time    { color: #a6adc8; }
+.close-button {
+    background: #f38ba8; color: #11111b;
+    border-radius: 50%; margin: 6px; padding: 2px;
+}
+.close-button:hover { background: #eba0ac; }
+
+.notification-action, .notification-default-action {
+    background: #313244; color: #cdd6f4; border-radius: 10px;
+}
+.notification-action:hover { background: #cba6f7; color: #11111b; }
+
+/* do-not-disturb + widgets */
+.widget-dnd { color: #cdd6f4; margin: 6px; }
+.widget-dnd > switch { background: #45475a; border-radius: 12px; }
+.widget-dnd > switch:checked { background: #cba6f7; }
+.widget-label > label { color: #cdd6f4; }
+.widget-mpris, .widget-volume, .widget-backlight {
+    background: #313244; border-radius: 12px; color: #cdd6f4; margin: 6px; padding: 8px;
+}
