@@ -7,10 +7,10 @@ return {
   {
     "nvim-lualine/lualine.nvim",
     event = "VeryLazy",
-    dependencies = { "nvim-tree/nvim-web-devicons" },
+    dependencies = { "catppuccin/nvim", "nvim-tree/nvim-web-devicons" },
     opts = {
       options = {
-        theme = "catppuccin",
+        theme = "catppuccin-mocha",
         globalstatus = true,
         icons_enabled = true,
         section_separators = "",
