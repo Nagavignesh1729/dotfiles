@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+# cprun <sol.cpp|sol.py> [input.txt]   compile+run, feeding input.txt to stdin
+src="$1"; inp="${2:-}"
+[ -z "$src" ] && { echo "usage: cprun <sol.cpp|sol.py> [input.txt]"; exit 1; }
+case "$src" in
+  *.cpp) g++ -O2 -std=gnu++20 -Wall -o /tmp/cpbin "$src" || exit 1; cmd=(/tmp/cpbin);;
+  *.py)  cmd=(python "$src");;
+  *) echo "unsupported: $src"; exit 1;;
+esac
+if [ -n "$inp" ]; then "${cmd[@]}" < "$inp"; else "${cmd[@]}"; fi
