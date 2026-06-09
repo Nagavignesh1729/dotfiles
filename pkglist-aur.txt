@@ -5,4 +5,3 @@ eww
 sddm-astronaut-theme
 wlogout
 yay
-yay-debug
