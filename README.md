@@ -18,8 +18,8 @@ My Arch Linux + [Hyprland](https://hypr.land) desktop in the Catppuccin Mocha pa
 | ![nvim dashboard](screenshots/nvim-dashboard.jpg) | ![nvim code](screenshots/nvim-code.jpg) |
 | **File manager (Thunar)** | **Terminal greeting (fastfetch)** |
 | ![thunar](screenshots/thunar.jpg) | ![fastfetch](screenshots/fastfetch.jpg) |
-
-![Lock screen (hyprlock)](screenshots/lockscreen.jpg)
+| **Audio visualizer (cava)** | **Lock screen (hyprlock)** |
+| ![cava](screenshots/cava.jpg) | ![lockscreen](screenshots/lockscreen.jpg) |
 
 ## What you get
 
