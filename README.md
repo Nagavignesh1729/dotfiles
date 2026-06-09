@@ -3,7 +3,14 @@
 My Arch Linux + [Hyprland](https://hypr.land) desktop in the Catppuccin Mocha palette
 (mauve accent), plus a terminal-first dev environment. One script sets up the whole thing.
 
-<!-- Add a screenshot here once you have one -->
+## Screenshots
+
+![Desktop with Waybar and the eww dashboard](screenshots/desktop.jpg)
+
+| | |
+|---|---|
+| ![Lock screen](screenshots/lockscreen.jpg) | ![Neovim](screenshots/neovim.jpg) |
+| ![btop system monitor](screenshots/btop.jpg) | ![swaync notifications](screenshots/notifications.jpg) |
 
 ## What you get
 
