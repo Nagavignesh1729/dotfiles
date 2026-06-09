@@ -5,12 +5,21 @@ My Arch Linux + [Hyprland](https://hypr.land) desktop in the Catppuccin Mocha pa
 
 ## Screenshots
 
-![Desktop with Waybar and the eww dashboard](screenshots/desktop.jpg)
+![Desktop: Waybar and wallpaper](screenshots/desktop.jpg)
 
-| | |
-|---|---|
-| ![Lock screen](screenshots/lockscreen.jpg) | ![Neovim](screenshots/neovim.jpg) |
-| ![btop system monitor](screenshots/btop.jpg) | ![swaync notifications](screenshots/notifications.jpg) |
+| eww dashboard (Super+Grave) | Keybind cheatsheet (Super+/) |
+|:--:|:--:|
+| ![dashboard](screenshots/dashboard.jpg) | ![cheatsheet](screenshots/cheatsheet.jpg) |
+| **App launcher (wofi)** | **Power menu (wlogout)** |
+| ![launcher](screenshots/launcher.jpg) | ![power menu](screenshots/powermenu.jpg) |
+| **System monitor (btop)** | **Notifications (swaync)** |
+| ![btop](screenshots/btop.jpg) | ![notifications](screenshots/notifications.jpg) |
+| **Neovim dashboard** | **Neovim editing (LSP + Treesitter)** |
+| ![nvim dashboard](screenshots/nvim-dashboard.jpg) | ![nvim code](screenshots/nvim-code.jpg) |
+| **File manager (Thunar)** | **Terminal greeting (fastfetch)** |
+| ![thunar](screenshots/thunar.jpg) | ![fastfetch](screenshots/fastfetch.jpg) |
+
+![Lock screen (hyprlock)](screenshots/lockscreen.jpg)
 
 ## What you get
 
