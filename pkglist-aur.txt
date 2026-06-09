@@ -1,0 +1,8 @@
+bibata-cursor-theme
+cachyos-ananicy-rules-git
+catppuccin-gtk-theme-mocha
+eww
+sddm-astronaut-theme
+wlogout
+yay
+yay-debug
