@@ -51,13 +51,20 @@ if [[ ! -d "$DOTGIT" ]]; then
 fi
 say "Applying dotfiles to \$HOME (backing up any conflicts)..."
 mkdir -p "$BACKUP"
-if ! config checkout 2>/tmp/_cf_co; then
-  grep -E "^\s+\." /tmp/_cf_co | awk '{print $1}' | while read -r f; do
-    mkdir -p "$BACKUP/$(dirname "$f")"
-    mv "$HOME/$f" "$BACKUP/$f" 2>/dev/null || true
-  done
-  config checkout || die "Checkout still failing — resolve manually."
-fi
+# Back up EVERY conflicting file git lists (not just dotfiles: also setup.sh,
+# README.md, pkglists, screenshots/, plus the user's existing .bashrc etc.),
+# then retry. Loop because resolving one batch can reveal more.
+tries=0
+until config checkout 2>/tmp/_cf_co; do
+  tries=$((tries + 1))
+  [ "$tries" -gt 4 ] && die "Checkout still failing after backups; resolve manually (backups in $BACKUP)."
+  awk '/would be overwritten/{f=1;next} /^[^[:space:]]/{f=0} f&&NF{gsub(/^[[:space:]]+/,"");print}' /tmp/_cf_co \
+  | while read -r rel; do
+      [ -e "$HOME/$rel" ] || continue
+      mkdir -p "$BACKUP/$(dirname "$rel")"
+      mv "$HOME/$rel" "$BACKUP/$rel" 2>/dev/null || true
+    done
+done
 config config --local status.showUntrackedFiles no
 say "Dotfiles applied. (Run 'config status' later; alias is in config.fish.)"
 

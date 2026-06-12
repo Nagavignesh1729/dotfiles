@@ -72,8 +72,9 @@ yay -S --needed - < pkglist-aur.txt
 git clone --bare https://github.com/Nagavignesh1729/dotfiles.git $HOME/.dotfiles
 alias config='git --git-dir=$HOME/.dotfiles --work-tree=$HOME'
 mkdir -p ~/.config-backup
-config checkout 2>&1 | grep -E "^\s+\." | awk '{print $1}' \
-  | while read f; do mkdir -p ~/.config-backup/$(dirname "$f"); mv ~/"$f" ~/.config-backup/"$f"; done
+# back up ALL conflicting files (not just dotfiles) then check out
+config checkout 2>&1 | awk '/would be overwritten/{f=1;next} /^[^ \t]/{f=0} f&&NF{gsub(/^[ \t]+/,"");print}' \
+  | while read f; do mkdir -p ~/.config-backup/"$(dirname "$f")"; mv ~/"$f" ~/.config-backup/"$f"; done
 config checkout
 config config --local status.showUntrackedFiles no
 
