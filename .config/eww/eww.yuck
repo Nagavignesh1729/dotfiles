@@ -84,6 +84,8 @@
     (keyrow :key "Super + F"     :action "Fullscreen")
     (keyrow :key "Super + S"     :action "Scratchpad terminal")
     (keyrow :key "Super + P"     :action "Color picker")
+    (keyrow :key "Super + W"     :action "Next wallpaper")
+    (keyrow :key "Super + Shift+P" :action "Performance toggle")
     (keyrow :key "Super + H"     :action "Clipboard history")
     (keyrow :key "Super + N"     :action "Notification center")
     (keyrow :key "Super + Grave" :action "System dashboard")
