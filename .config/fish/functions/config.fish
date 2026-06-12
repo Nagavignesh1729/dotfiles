@@ -1,3 +1,3 @@
-function config --wraps='git --git-dir=/home/naga/.dotfiles --work-tree=/home/naga' --description 'alias config git --git-dir=/home/naga/.dotfiles --work-tree=/home/naga'
-    git --git-dir=/home/naga/.dotfiles --work-tree=/home/naga $argv
+function config --description 'dotfiles bare-repo wrapper'
+    git --git-dir=$HOME/.dotfiles --work-tree=$HOME $argv
 end

@@ -14,7 +14,7 @@ starship init fish | source
 
 # Greeting
 function fish_greeting
-	figlet EZIO | lolcat
+	figlet (uname -n | string upper) | lolcat
 	fastfetch
 end
 
@@ -25,7 +25,7 @@ fzf --fish | source
 end
 
 # Created by `pipx` on 2026-05-31 07:42:40
-set PATH $PATH /home/naga/.local/bin
+set PATH $PATH $HOME/.local/bin
 
 # === dev environment (nvim/uv/fnm) — added 2026-06-07 ===
 if status is-interactive

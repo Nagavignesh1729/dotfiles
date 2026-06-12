@@ -6,6 +6,7 @@
 (defpoll BAT    :interval "10s" `cat /sys/class/power_supply/BAT*/capacity 2>/dev/null | head -1`)
 (defpoll VOL    :interval "1s"  `wpctl get-volume @DEFAULT_AUDIO_SINK@ 2>/dev/null | awk '{printf "%.0f", $2*100}'`)
 (defpoll BRIGHT :interval "2s"  `brightnessctl -m 2>/dev/null | awk -F, '{print $4}' | tr -d '%'`)
+(defpoll USERHOST :interval "3600s" `echo "$(id -un)@$(uname -n)"`)
 (defpoll NOWPLAYING :interval "2s" `playerctl metadata --format '{{artist}} - {{title}}' 2>/dev/null || echo ""`)
 
 (defwidget metric [label value cls unit]
@@ -19,7 +20,7 @@
   (box :orientation "v" :space-evenly false :class "header"
     (label :class "clock" :text TIME)
     (label :class "date"  :text DATE)
-    (label :class "user"  :text "naga@ezio")))
+    (label :class "user"  :text USERHOST)))
 
 (defwidget syscard []
   (box :orientation "v" :space-evenly false :class "card" :spacing 12

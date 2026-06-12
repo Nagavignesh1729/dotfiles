@@ -1,4 +1,4 @@
-# Neovim Cheat Sheet — Ezio  (leader = Space)
+# Neovim Cheat Sheet  (leader = Space)
 
 Open this anytime:  `nvim ~/nvim-cheatsheet.md`
 Live keybind popup:  press `<Space>` and wait  (which-key)

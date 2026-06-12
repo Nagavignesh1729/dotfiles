@@ -69,6 +69,17 @@ config config --local status.showUntrackedFiles no
 say "Dotfiles applied. (Run 'config status' later; alias is in config.fish.)"
 
 # ---------------------------------------------------------------------------
+# 2b. Template absolute paths: some configs (qt5ct/qt6ct color schemes) need an
+#     ABSOLUTE path, so they ship with the author's /home/naga. Rewrite those to
+#     THIS user's $HOME. (Runtime-dynamic configs like fish/eww need no fixup.)
+# ---------------------------------------------------------------------------
+if [ "$HOME" != "/home/naga" ]; then
+  say "Rewriting baked-in /home/naga paths to $HOME ..."
+  grep -rlI "/home/naga" "$HOME/.config" "$HOME/.local" 2>/dev/null \
+    | while read -r f; do sed -i "s|/home/naga|$HOME|g" "$f"; done
+fi
+
+# ---------------------------------------------------------------------------
 # 3. Packages — official repos (pkglist is authoritative; fallback list below)
 # ---------------------------------------------------------------------------
 ESSENTIALS=(
@@ -118,12 +129,60 @@ if command -v fnm >/dev/null; then
   fnm install --lts && fnm default lts-latest || warn "fnm node install hiccup."
 fi
 
+# git identity (so YOU commit as yourself, not the repo author)
+if ! git config --global user.email >/dev/null 2>&1; then
+  printf "Set up git identity (Enter to skip).\n"
+  read -rp "  git user.name:  " _gn
+  read -rp "  git user.email: " _ge
+  [ -n "$_gn" ] && git config --global user.name  "$_gn"
+  [ -n "$_ge" ] && git config --global user.email "$_ge"
+fi
+
 # ---------------------------------------------------------------------------
 # 6. Neovim — install plugins (parsers build lazily on first real open)
 # ---------------------------------------------------------------------------
 if command -v nvim >/dev/null; then
   say "Bootstrapping Neovim plugins (lazy.nvim sync)..."
   nvim --headless "+Lazy! sync" +qa 2>/dev/null || warn "Lazy sync hiccup — run :Lazy in nvim."
+fi
+
+# ---------------------------------------------------------------------------
+# 6b. Plymouth boot splash (Catppuccin Mocha) -- OPTIONAL (touches initramfs + cmdline)
+# ---------------------------------------------------------------------------
+if ask "Set up the Catppuccin Plymouth boot splash? (installs plymouth, edits initramfs + kernel cmdline)"; then
+  sudo pacman -S --needed --noconfirm plymouth || warn "plymouth install failed"
+  # Recreate the theme from the stock 'spinner' (just recolor bg to Catppuccin base)
+  if [ -d /usr/share/plymouth/themes/spinner ]; then
+    sudo rm -rf /usr/share/plymouth/themes/catppuccin-mocha
+    sudo cp -r /usr/share/plymouth/themes/spinner /usr/share/plymouth/themes/catppuccin-mocha
+    th=/usr/share/plymouth/themes/catppuccin-mocha
+    sudo sed -i \
+      -e 's/^BackgroundStartColor=.*/BackgroundStartColor=0x1e1e2e/' \
+      -e 's/^BackgroundEndColor=.*/BackgroundEndColor=0x1e1e2e/' \
+      -e 's/^ProgressBarBackgroundColor=.*/ProgressBarBackgroundColor=0x45475a/' \
+      -e "s#^ImageDir=.*#ImageDir=$th#" \
+      -e 's/^Name=.*/Name=Catppuccin-Mocha/' \
+      "$th/spinner.plymouth"
+    sudo mv -f "$th/spinner.plymouth" "$th/catppuccin-mocha.plymouth"
+  fi
+  # mkinitcpio: add the 'plymouth' HOOK (right after udev or systemd) if missing
+  grep -q 'plymouth' /etc/mkinitcpio.conf || \
+    sudo sed -i -E 's/^(HOOKS=\([^)]*\b(udev|systemd)\b)/\1 plymouth/' /etc/mkinitcpio.conf
+  # kernel cmdline: add 'splash quiet' (bootloader-aware)
+  if [ -d /boot/loader/entries ]; then                       # systemd-boot
+    for e in /boot/loader/entries/*.conf; do
+      grep -q 'splash' "$e" || sudo sed -i '/^options/ s/$/ splash quiet/' "$e"
+    done
+  elif [ -f /etc/default/grub ]; then                        # GRUB
+    grep -q 'splash' /etc/default/grub || \
+      sudo sed -i 's/\(GRUB_CMDLINE_LINUX_DEFAULT="[^"]*\)"/\1 splash quiet"/' /etc/default/grub
+    sudo grub-mkconfig -o /boot/grub/grub.cfg
+  else
+    warn "Unknown bootloader -- add 'splash quiet' to your kernel cmdline manually (see README)."
+  fi
+  sudo plymouth-set-default-theme -R catppuccin-mocha \
+    || { warn "theme set failed; rebuilding initramfs..."; sudo mkinitcpio -P; }
+  say "Plymouth configured (visible on next reboot)."
 fi
 
 # ---------------------------------------------------------------------------
@@ -150,12 +209,18 @@ command -v systemctl >/dev/null && {
 # ---------------------------------------------------------------------------
 # Done
 # ---------------------------------------------------------------------------
-say "Setup complete! 🎉  Final manual steps:"
+say "Setup complete. Final manual steps:"
 cat <<'NOTES'
   1. Reboot, then start Hyprland (or pick it at your display manager).
   2. Regenerate your monitor layout (machine-specific):   nwg-displays
   3. First `nvim` launch finishes Treesitter parser builds automatically.
   4. AMD users: ensure 'amd-ucode' (not 'intel-ucode'); thermald was skipped.
-  5. Backups of any overwritten configs:  the ~/.config-backup-* folder.
-  6. Tweak wallpaper, and enjoy. Update dotfiles later with: config add/commit/push
+  5. NOT installed (author's hardware-specific fixes for an Intel/Lenovo laptop):
+     a Synaptics-touchpad rebind service and an Intel-iGPU min-freq service.
+     You almost certainly do NOT need them. See the README if you're also on
+     Intel and want the iGPU smoothness tweak.
+  6. Backups of any overwritten configs:  the ~/.config-backup-* folder.
+  7. Plugins needing your own terminal (polkit can't prompt non-interactively):
+     hyprexpo:  hyprpm update && hyprpm add https://github.com/hyprwm/hyprland-plugins && hyprpm enable hyprexpo
+  8. Update dotfiles later with:  config add <file>; config commit -m '...'; config push
 NOTES

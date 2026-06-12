@@ -94,6 +94,38 @@ These configs were built on an Intel/Lenovo laptop, so adjust a few things on ot
   `nwg-displays` after install.
 - GPU drivers (`mesa`, `vulkan-*`) depend on your card.
 
+## Plymouth boot splash (optional)
+
+A Catppuccin-dark boot splash (a recolored `spinner`). `setup.sh` offers to do this
+automatically (the "boot splash" prompt). To set it up by hand:
+
+```bash
+# 1. install plymouth
+sudo pacman -S plymouth
+
+# 2. make the theme from the stock spinner, recolored to Catppuccin base
+sudo cp -r /usr/share/plymouth/themes/spinner /usr/share/plymouth/themes/catppuccin-mocha
+th=/usr/share/plymouth/themes/catppuccin-mocha
+sudo sed -i -e 's/^BackgroundStartColor=.*/BackgroundStartColor=0x1e1e2e/' \
+            -e 's/^BackgroundEndColor=.*/BackgroundEndColor=0x1e1e2e/' \
+            -e 's/^ProgressBarBackgroundColor=.*/ProgressBarBackgroundColor=0x45475a/' \
+            -e "s#^ImageDir=.*#ImageDir=$th#" "$th/spinner.plymouth"
+sudo mv "$th/spinner.plymouth" "$th/catppuccin-mocha.plymouth"
+
+# 3. add the 'plymouth' hook in /etc/mkinitcpio.conf, right after udev or systemd:
+#    HOOKS=(base systemd plymouth autodetect ... )   <- edit this line
+
+# 4. add 'splash quiet' to your kernel cmdline:
+#    systemd-boot: append to the 'options' line in /boot/loader/entries/*.conf
+#    GRUB: add to GRUB_CMDLINE_LINUX_DEFAULT in /etc/default/grub,
+#          then: sudo grub-mkconfig -o /boot/grub/grub.cfg
+
+# 5. apply + rebuild the initramfs
+sudo plymouth-set-default-theme -R catppuccin-mocha
+```
+Reboot to see it. If `mkinitcpio` complains about a missing `fsck` helper on a Btrfs
+root, that warning is harmless (remove `fsck` from HOOKS if you want it gone).
+
 ## Key bindings (Hyprland)
 
 | Key | Action |
@@ -105,6 +137,8 @@ These configs were built on an Intel/Lenovo laptop, so adjust a few things on ot
 | Super + / | keybind cheatsheet |
 | Super + S | scratchpad |
 | Super + P | color picker |
+| Super + W | next wallpaper (smooth transition) |
+| Super + Shift + P | performance toggle (effects on/off) |
 
 In Neovim the leader is Space: `Space ff` find files, `Space fg` grep, `Space e` file
 tree, `Space ?` cheat sheet. The full sheet is at `~/nvim-cheatsheet.md`.
