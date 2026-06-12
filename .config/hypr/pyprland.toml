@@ -1,5 +1,5 @@
 [pyprland]
-plugins = ["magnify", "scratchpads"]
+plugins = ["magnify", "scratchpads", "expose"]
 
 [scratchpads.term]
 command = "kitty --class scratchpad-pypr"
